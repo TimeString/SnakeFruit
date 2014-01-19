@@ -39,9 +39,8 @@ public class Hexagon {
 		return type;
 	}
 	
-	}
 	public void draw() {
-		createBitmap();
+//		createBitmap();
 	}
 	
 	private double x2px() {
