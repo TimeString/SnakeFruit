@@ -13,7 +13,7 @@ public class Snake {
 	
 	// call from GamePlanner, to move or do something in it
 	public void trigger() {
-		
+		// hello
 	}
 	
 	public void move() {
