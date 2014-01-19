@@ -26,8 +26,6 @@ public class MainGamePanel extends SurfaceView implements
 	
 	private GamePlanner gamePlanner;
 	
-	private long lastUpdateTime = 0;
-	private final long updateFrameMilliScond = 200;
 	private int touchDownX, touchDownY;
 	
 	public MainGamePanel(Context context) {
@@ -95,17 +93,5 @@ public class MainGamePanel extends SurfaceView implements
 	protected void onDraw(Canvas canvas) {
 		//Log.i(TAG, "called onDraw()");
 		gamePlanner.trigger(canvas);
-	}
-
-	protected void threadSignal(Canvas canvas) {
-		long now = System.currentTimeMillis();
-		long ahead = now - lastUpdateTime;
-		if (ahead >= updateFrameMilliScond) {
-			// update time
-			if (ahead > updateFrameMilliScond)
-				ahead = updateFrameMilliScond;
-			lastUpdateTime = now - ahead;
-			this.onDraw(canvas);
-		}
 	}
 }

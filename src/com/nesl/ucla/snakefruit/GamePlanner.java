@@ -12,7 +12,7 @@ public class GamePlanner {
 	
 	public static int FIELD_WIDTH = 53;
 	public static int FIELD_HEIGHT = 43;
-	public static Hexagon[][] field = new Hexagon[FIELD_HEIGHT][FIELD_WIDTH]; 
+	public static Hexagon[][] field; 
 	
 	private int start_r = 0;
 	private int start_c = 0;
@@ -22,6 +22,9 @@ public class GamePlanner {
 	
 	private int width, height;
 	
+	private long lastUpdateTime = 0;
+	private final long updateFrameMilliScond = 200;
+	
 	public GamePlanner(int _width, int _height) {
 		width = _width;
 		height = _height;
@@ -29,6 +32,7 @@ public class GamePlanner {
 		FIELD_HEIGHT = height / (Hexagon.BITMAP_HEIGHT + 2);
 		start_r = FIELD_HEIGHT / 2;
 		start_c = FIELD_WIDTH / 2;
+		field = new Hexagon[FIELD_HEIGHT][FIELD_WIDTH];
 		Hexagon.OFFSET_X = (int)(width / 2.0 + Hexagon.rc2px(-FIELD_HEIGHT / 2, - FIELD_WIDTH / 2));
 		Hexagon.OFFSET_Y = (int)(height / 2.0 + Hexagon.rc2py(-FIELD_HEIGHT / 2, - FIELD_WIDTH / 2));
 		Log.i(TAG, "middle: " + (width / 2) + ", " + (height / 2));
@@ -66,8 +70,19 @@ public class GamePlanner {
 	
 	// the frame starts!
 	public void trigger(Canvas canvas) {
+		long now = System.currentTimeMillis();
+		long delta = now - lastUpdateTime;
+		if (delta >= updateFrameMilliScond) {
+			// update time
+			long ahead = delta - updateFrameMilliScond;
+			if (ahead > updateFrameMilliScond)
+				ahead = updateFrameMilliScond;
+			lastUpdateTime = now - ahead;
+			humanSnake.move();
+		}
+		
+		//Log.i(TAG, "trigger");
 		canvas.drawColor(Color.BLACK);
-		//humanSnake.move();
 		for (int i = 0; i < FIELD_HEIGHT; i++)
 			for (int j = 0; j < FIELD_WIDTH; j++)
 				field[i][j].draw(canvas);

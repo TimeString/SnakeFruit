@@ -1,16 +1,17 @@
 package com.nesl.ucla.snakefruit;
 
 import java.util.ArrayList;
-import com.nesl.ucla.snakefruit.Utils;
+
+import android.util.Log;
 
 public class Snake {
+	private static final String TAG = MainGamePanel.class.getSimpleName();
+	
 	private final int INITIAL_GROWTH = 5;
-	private final int FIRST = 0;
 	
 	private ArrayList<Hexagon> snakeBody;
 	
 	private int nrToGrow;
-	private int nrToCut;
 	private int oriDirection;
 	private int curDirection;
 	private int targetDirection;
@@ -29,7 +30,7 @@ public class Snake {
 		
 		//make initial head
 		snakeBody = new ArrayList<Hexagon>();
-		snakeBody.add(FIRST, GamePlanner.field[initRow][initCol]);
+		snakeBody.add(0, GamePlanner.field[initRow][initCol]);
 		GamePlanner.field[initRow][initCol].updateType(HexagonType.HEAD);
 		GamePlanner.field[initRow][initCol].updateColor(color);
 		GamePlanner.field[initRow][initCol].updateDir(curDirection);
@@ -45,10 +46,11 @@ public class Snake {
 	//This function takes the number to grow and number to cut into consideration
 	public void move() {
 		if(snakeBody.size() > 0) {
-			int prevHeadRow = snakeBody.get(FIRST).getRow();
-			int prevHeadCol = snakeBody.get(FIRST).getCol();
+			int prevHeadRow = snakeBody.get(0).getRow();
+			int prevHeadCol = snakeBody.get(0).getCol();
 			int newHeadRow = prevHeadRow + Utils.DIR_2_R[curDirection];
 			int newHeadCol = prevHeadCol + Utils.DIR_2_C[curDirection];
+			Log.i(TAG, "dir=" + curDirection + " :: " + prevHeadRow + ", " + prevHeadCol + " -> " + newHeadRow + ", " + newHeadCol);
 			Hexagon nextHex = GamePlanner.field[newHeadRow][newHeadCol];
 			if (nextHex.getType() == HexagonType.FRUIT) {
 				nrToGrow += 3;
@@ -58,6 +60,7 @@ public class Snake {
 				addHead(prevHeadRow, prevHeadCol, newHeadRow, newHeadCol);
 			}
 			else {
+				Log.i(TAG, "removeHead");
 				removeHead();
 			}
 		}
@@ -79,6 +82,9 @@ public class Snake {
 		GamePlanner.field[nr][nc].updateType(HexagonType.HEAD);
 		GamePlanner.field[nr][nc].updateColor(color);
 		GamePlanner.field[nr][nc].updateDir(curDirection);
+		snakeBody.add(0, GamePlanner.field[nr][nc]);
+		oriDirection = curDirection;
+		preferTargetDirection();
 	}
 	
 	private void removeTail(){
@@ -153,9 +159,5 @@ public class Snake {
 		
 	public void setNrToGrow(int num){
 		nrToGrow = num;
-	}
-	
-	public void setNrToCut(int num){
-		nrToCut = num;
 	}
 }

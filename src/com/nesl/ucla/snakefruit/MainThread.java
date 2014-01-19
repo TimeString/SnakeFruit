@@ -52,7 +52,7 @@ public class MainThread extends Thread {
 					// update game state 
 					// render state to the screen
 					// draws the canvas on the panel
-					this.gamePanel.threadSignal(canvas);				
+					this.gamePanel.onDraw(canvas);				
 				}
 			} finally {
 				// in case of an exception the surface is not left in 
