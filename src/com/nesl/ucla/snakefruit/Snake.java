@@ -4,23 +4,26 @@ import java.util.ArrayList;
 
 import android.util.Log;
 
-public class Snake {
+public abstract class Snake {
 	private static final String TAG = MainGamePanel.class.getSimpleName();
 	
-	private final int INITIAL_GROWTH = 50;
+	private final int INITIAL_GROWTH = 10;
 	
-	private ArrayList<Hexagon> snakeBody;
+	protected ArrayList<Hexagon> snakeBody;
 	
 	private int nrToGrow;
 	private int oriDirection;
-	private int curDirection;
-	private int targetDirection;
-	private int color;
+	protected int curDirection;
+	protected int targetDirection;
+	protected int color;
 	
 	private int punishment = 0;
+	private FruitDeliver fruitDeliver;
 	
-	public Snake(int initRow, int initCol, int initDir, int initColor) {
+	public Snake(int initRow, int initCol, int initDir, int initColor, FruitDeliver _fruitDeliver) {
 		//initialize
+		fruitDeliver = _fruitDeliver;
+		
 		//snake grows RIGHT for initial 5 stages
 		nrToGrow = INITIAL_GROWTH - 1;
 		oriDirection = initDir;
@@ -46,14 +49,17 @@ public class Snake {
 	//This function takes the number to grow and number to cut into consideration
 	public void move() {
 		if(snakeBody.size() > 0) {
+			makeFinalDecision();
+			preferTargetDirection();
 			int prevHeadRow = snakeBody.get(0).getRow();
 			int prevHeadCol = snakeBody.get(0).getCol();
 			int newHeadRow = prevHeadRow + Utils.DIR_2_R[curDirection];
 			int newHeadCol = prevHeadCol + Utils.DIR_2_C[curDirection];
-			Log.i(TAG, "dir=" + curDirection + " :: " + prevHeadRow + ", " + prevHeadCol + " -> " + newHeadRow + ", " + newHeadCol);
+			//Log.i(TAG, "dir=" + curDirection + " :: " + prevHeadRow + ", " + prevHeadCol + " -> " + newHeadRow + ", " + newHeadCol);
 			Hexagon nextHex = GamePlanner.field[newHeadRow][newHeadCol];
 			if (nextHex.getType() == HexagonType.FRUIT) {
 				nrToGrow += 3;
+				fruitDeliver.eatFruit(newHeadRow, newHeadCol);
 				addHead(prevHeadRow, prevHeadCol, newHeadRow, newHeadCol);
 			}
 			else if (nextHex.getType() == HexagonType.EMPTY) {
@@ -74,8 +80,10 @@ public class Snake {
 				removeTail();
 			}
 		}
-		Log.i(TAG, "size: " + snakeBody.size());
+		//Log.i(TAG, "size: " + snakeBody.size());
 	}
+	
+	abstract protected void makeFinalDecision();
 	
 	private void addHead(int pr, int pc, int nr, int nc){
 		GamePlanner.field[pr][pc].updateType(HexagonType.BODY);
@@ -131,20 +139,9 @@ public class Snake {
 		punishment++;
 	}
 	
-	private int checkCollisionWall(){
-		return 0;
-	}
 	
-	public void setDirection(int newDirection) {
-		targetDirection = newDirection;
-		preferTargetDirection();
-		Hexagon head = snakeBody.get(0);
-		head.updateType(HexagonType.HEAD);
-		head.updateColor(color);
-		head.updateDir(curDirection);
-	}
 	
-	private void preferTargetDirection() {
+	protected void preferTargetDirection() {
 		int dd = targetDirection - oriDirection;
 		if (dd < -3)
 			dd += 6;

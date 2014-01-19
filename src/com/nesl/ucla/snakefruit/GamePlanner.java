@@ -6,7 +6,7 @@ import android.util.Log;
 
 public class GamePlanner {
 	private FruitDeliver fruitDeliver;
-	private Snake humanSnake;
+	private Snake[] snakes = new Snake[2];
 	//private Score score;
 	private static final String TAG = MainGamePanel.class.getSimpleName();
 	
@@ -62,7 +62,11 @@ public class GamePlanner {
 					field[i][j].updateType(HexagonType.EMPTY);
 			}
 		}
-		humanSnake = new Snake(start_r, start_c, 0, Color.CYAN);
+		fruitDeliver = new FruitDeliver(this);
+		fruitDeliver.generateNewOne();
+		snakes[0] = new HumanControlSnake(start_r - 5, start_c - 10, 0, Color.CYAN, fruitDeliver);
+		snakes[1] = new AIControlSnake(start_r + 5, start_c + 10, 3, Color.YELLOW, fruitDeliver);
+		
 		//for (int i = 0; i < FIELD_HEIGHT; i++)
 		//	for (int j = 0; j < FIELD_WIDTH; j++)
 		//		field[i][j].updateType(HexagonType.EMPTY);
@@ -79,7 +83,11 @@ public class GamePlanner {
 			if (ahead > updateFrameMilliScond)
 				ahead = updateFrameMilliScond;
 			lastUpdateTime = now - ahead;
-			humanSnake.move();
+			for (int i = 0; i < 2; i++) {
+				if (snakes[i] != null)
+					snakes[i].move();
+			}
+			fruitDeliver.generateNewOne();
 		}
 		
 		//Log.i(TAG, "trigger");
@@ -99,7 +107,7 @@ public class GamePlanner {
 				angle += Math.PI * 2.0;
 			int newDir = (int)(angle / (Math.PI / 3.0));
 			//Log.i(TAG, "get direction: " + newDir);
-			humanSnake.setDirection(newDir);
+			((HumanControlSnake)snakes[0]).setDirection(newDir);
 		}
 	}
 }
