@@ -4,11 +4,8 @@
 package com.nesl.ucla.snakefruit;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -26,12 +23,12 @@ public class MainGamePanel extends SurfaceView implements
 	private static final String TAG = MainGamePanel.class.getSimpleName();
 	
 	private MainThread thread;
-	private Droid droid1, droid2;
-
+	
 	private GamePlanner gamePlanner = new GamePlanner();
 	
 	private long lastUpdateTime = 0;
 	private final long updateFrameMilliScond = 200;
+	private int touchDownX, touchDownY;
 	
 	public MainGamePanel(Context context) {
 		super(context);
@@ -39,10 +36,6 @@ public class MainGamePanel extends SurfaceView implements
 		// adding the callback (this) to the surface holder to intercept events
 		getHolder().addCallback(this);
 
-		// create droid and load bitmap
-		droid1 = new Droid(null, getWidth(), getHeight());
-		droid2 = new Droid(null, getWidth(), getHeight());
-		
 		// create the game loop thread
 		thread = new MainThread(getHolder(), this);
 		
@@ -83,25 +76,11 @@ public class MainGamePanel extends SurfaceView implements
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
-			Log.i(TAG, "width: " + getWidth() + ", height" + getHeight());
-			Log.d(TAG, "Coords: x=" + event.getX() + ",y=" + event.getY());
-			droid1.setTargetCoor((int)event.getX(), (int)event.getY());
-			droid1.setTouched(true);
-			droid2.setTargetCoor((int)event.getX(), (int)event.getY());
-			droid2.setTouched(true);
-		} if (event.getAction() == MotionEvent.ACTION_MOVE) {
-			// the gestures
-			if (droid1.isTouched()) {
-				// the droid was picked up and is being dragged
-				droid1.setTargetCoor((int)event.getX(), (int)event.getY());
-				droid2.setTargetCoor((int)event.getX(), (int)event.getY());
-			}
-		} if (event.getAction() == MotionEvent.ACTION_UP) {
-			// touch was released
-			if (droid1.isTouched()) {
-				droid1.setTouched(false);
-				droid2.setTouched(false);
-			}
+			touchDownX = (int)event.getX();
+			touchDownY = (int)event.getY();
+		} 
+		else if (event.getAction() == MotionEvent.ACTION_UP) {
+			gamePlanner.passUserInputSwipe((int)event.getX() - touchDownX, (int)event.getY() - touchDownY);
 		}
 		return true;
 	}
@@ -116,10 +95,10 @@ public class MainGamePanel extends SurfaceView implements
 	protected void threadSignal(Canvas canvas) {
 		long now = System.currentTimeMillis();
 		long ahead = now - lastUpdateTime;
-		if (ahead >= 30) {
+		if (ahead >= updateFrameMilliScond) {
 			// update time
-			if (ahead > 30)
-				ahead = 30;
+			if (ahead > updateFrameMilliScond)
+				ahead = updateFrameMilliScond;
 			lastUpdateTime = now - ahead;
 			this.onDraw(canvas);
 		}

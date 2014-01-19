@@ -2,34 +2,48 @@ package com.nesl.ucla.snakefruit;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.util.Log;
 
 public class GamePlanner {
 	//private FruitDeliver fruitDeliver;
 	private Snake humanSnake;
 	//private Score score;
+	private static final String TAG = MainGamePanel.class.getSimpleName();
 	
-	public static final int field_width = 53;
-	public static final int field_height = 43;
-	public static Hexagon[][] field = new Hexagon[field_width][field_height]; 
+	public static final int FIELD_WIDTH = 53;
+	public static final int FIELD_HEIGHT = 43;
+	public static Hexagon[][] field = new Hexagon[FIELD_HEIGHT][FIELD_WIDTH]; 
 	
-	private final int start_x = field_width / 2;
-	private final int start_y = field_height / 2;
+	private final int start_r = FIELD_WIDTH / 2;
+	private final int start_c = FIELD_HEIGHT / 2;
+	
+	private final double swipeEffectiveDistance = 30.0;
+	private final double swipeEffectiveDistance2 = swipeEffectiveDistance * swipeEffectiveDistance;
 	
 	public GamePlanner() {
-		for (int i = 0; i < field_width; i++)
-			for (int j = 0; j < field_height; j++) {
+		for (int i = 0; i < FIELD_WIDTH; i++)
+			for (int j = 0; j < FIELD_HEIGHT; j++) {
 				
 			}
-		humanSnake = new Snake(start_x, start_y);
+		humanSnake = new Snake(start_r, start_c);
 	}
 	
 	// the frame starts!
 	public void trigger(Canvas canvas) {
 		canvas.drawColor(Color.BLACK);
+		humanSnake.move();
 	}
 	
 	// the screen detect the user swipes
 	public void passUserInputSwipe(int dx, int dy) {
-		// snake.setDirection(??);
+		double r2 = (double)(dx*dx + dy*dy);
+		if (r2 >= swipeEffectiveDistance2) {
+			double angle = Math.atan2(-dy, dx) + Math.PI / 6.0;
+			if (angle < 0.0)
+				angle += Math.PI * 2.0;
+			int newDir = (int)(angle / (Math.PI / 3.0));
+			Log.i(TAG, "get direction: " + newDir);
+			//snake.setDirection(newDir);
+		}
 	}
 }
