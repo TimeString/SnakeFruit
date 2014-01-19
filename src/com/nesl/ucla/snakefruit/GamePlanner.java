@@ -57,7 +57,7 @@ public class GamePlanner {
 					field[i][j].updateType(HexagonType.EMPTY);
 			}
 		}
-		//humanSnake = new Snake(start_r, start_c, Color.CYAN);
+		humanSnake = new Snake(start_r, start_c, Direction.RIGHT, Color.CYAN);
 		//for (int i = 0; i < FIELD_HEIGHT; i++)
 		//	for (int j = 0; j < FIELD_WIDTH; j++)
 		//		field[i][j].updateType(HexagonType.EMPTY);
@@ -82,8 +82,8 @@ public class GamePlanner {
 			if (angle < 0.0)
 				angle += Math.PI * 2.0;
 			int newDir = (int)(angle / (Math.PI / 3.0));
-			Log.i(TAG, "get direction: " + newDir);
-			//snake.setDirection(newDir);
+			//Log.i(TAG, "get direction: " + newDir);
+			humanSnake.setDirection(newDir);
 		}
 	}
 }

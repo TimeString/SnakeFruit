@@ -1,42 +1,13 @@
 package com.nesl.ucla.snakefruit;
 
 public class Utils {
-	static public CoorI getCoorIFromDir(Direction myDirection){
-		CoorI myCoorI = new CoorI();
-		
-		switch(myDirection) {
-			case LEFT:
-					myCoorI.col = -1;
-					myCoorI.row = 0;
-				break;
-				
-			case RIGHT:
-					myCoorI.col = 1;
-					myCoorI.row = 0;
-				break;
-				
-			case UPPER_LEFT:
-					myCoorI.col = -1;
-					myCoorI.row = -1;
-				break;
-				
-			case UPPER_RIGHT:
-					myCoorI.col = 1;
-					myCoorI.row = -1;
-				break;
-				
-			case LOWER_LEFT:
-					myCoorI.col = -1;
-					myCoorI.row = 1;
-				break;
-				
-			case LOWER_RIGHT:
-					myCoorI.col = 1;
-					myCoorI.row = 1;
-				break;
-		}
-		
-		return myCoorI;
+	public static final int DIR_2_R[] = { 0, -1 ,-1,  0,  1,  1};
+	public static final int DIR_2_C[] = { 1,  0, -1, -1,  0,  1};
+	
+	public static int rc_2_dir(int r, int c) {
+		for (int i = 0; i < 6; i++)
+			if (r == DIR_2_R[i] && c == DIR_2_C[i])
+				return i;
+		return -1;
 	}
-
 }

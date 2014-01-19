@@ -11,14 +11,20 @@ public class Snake {
 	
 	private int nrToGrow;
 	private int nrToCut;
-	private Direction curDirection;
+	private int oriDirection;
+	private int curDirection;
+	private int targetDirection;
 	private int color;
 	
-	public Snake(int initRow, int initCol, int initColor) {
+	private int punishment = 0;
+	
+	public Snake(int initRow, int initCol, int initDir, int initColor) {
 		//initialize
 		//snake grows RIGHT for initial 5 stages
-		nrToGrow = INITIAL_GROWTH;
-		curDirection = Direction.RIGHT;
+		nrToGrow = INITIAL_GROWTH - 1;
+		oriDirection = initDir;
+		curDirection = initDir;
+		targetDirection = initDir;
 		color = initColor;
 		
 		//make initial head
@@ -34,89 +40,41 @@ public class Snake {
 
 	//This function takes the number to grow and number to cut into consideration
 	public void move() {
-		//check for collision in next move
-		/*if(checkCollision()){
-			//chop off by half!
-		}
-		//else add a head
-		else{
-			if(checkForFruit()){
-				
+		if(snakeBody.size() > 0) {
+			int prevHeadRow = snakeBody.get(FIRST).getRow();
+			int prevHeadCol = snakeBody.get(FIRST).getCol();
+			int newHeadRow = prevHeadRow + Utils.DIR_2_R[curDirection];
+			int newHeadCol = prevHeadCol + Utils.DIR_2_C[curDirection];
+			Hexagon nextHex = GamePlanner.field[newHeadRow][newHeadCol];
+			if (nextHex.getType() == HexagonType.FRUIT) {
+				nrToGrow += 3;
+				addHead(prevHeadRow, prevHeadCol, newHeadRow, newHeadCol);
 			}
-			addHead();
+			else if (nextHex.getType() == HexagonType.EMPTY) {
+				addHead(prevHeadRow, prevHeadCol, newHeadRow, newHeadCol);
+			}
+			else {
+				removeHead();
+			}
 		}
-			*/
-		
-		//if in initial growth stage, do not remove tail
-		if(nrToGrow > 0){
-			nrToGrow--;
-		}
-		//else remove the tail
-		else{
-			removeTail();
-		}
-		
-		if(nrToCut > 0){
-			for(int i=0; i<nrToCut; i++){
+		if (snakeBody.size() > 0) {
+			//if in initial growth stage, do not remove tail
+			if(nrToGrow > 0){
+				nrToGrow--;
+			}
+			//else remove the tail
+			else{
 				removeTail();
 			}
 		}
 	}
 	
-	private void addHead(){
-		int prevHeadRow;
-		int prevHeadCol;
-		int newHeadRow;
-		int newHeadCol;
-		
-		
-		if(snakeBody.size() > 0){
-			//Get the coordinate of the previous head and calculate the next head coordinate, add Hexagon to list
-			prevHeadRow = snakeBody.get(FIRST).getRow();
-			prevHeadCol = snakeBody.get(FIRST).getCol();
-			
-			newHeadRow = prevHeadRow + Utils.getCoorIFromDir(curDirection).row;
-			newHeadCol = prevHeadCol + Utils.getCoorIFromDir(curDirection).col;
-			
-			//Before we add the head we need to check for collision
-			//checkHeadCollision!!!
-			
-			snakeBody.add(FIRST, GamePlanner.field[newHeadRow][newHeadCol]);	
-			
-			//Update the HexagonColor in field for new head
-			GamePlanner.field[prevHeadRow][prevHeadCol].updateColor(color);
-			
-			//Update the HexagonType in field for new head
-			switch(curDirection) {
-			case LEFT:
-				GamePlanner.field[prevHeadRow][prevHeadCol].updateType(HexagonType.HEAD_LEFT);
-				break;
-				
-			case RIGHT:
-				GamePlanner.field[prevHeadRow][prevHeadCol].updateType(HexagonType.HEAD_RIGHT);
-				break;
-				
-			case UPPER_LEFT:
-				GamePlanner.field[prevHeadRow][prevHeadCol].updateType(HexagonType.HEAD_UPPER_LEFT);	
-				break;
-				
-			case UPPER_RIGHT:
-				GamePlanner.field[prevHeadRow][prevHeadCol].updateType(HexagonType.HEAD_UPPER_RIGHT);	
-				break;
-				
-			case LOWER_LEFT:
-				GamePlanner.field[prevHeadRow][prevHeadCol].updateType(HexagonType.HEAD_LOWER_LEFT);
-				break;
-				
-			case LOWER_RIGHT:
-				GamePlanner.field[prevHeadRow][prevHeadCol].updateType(HexagonType.HEAD_LOWER_RIGHT);	
-				break;
-			}
-			
-			//Cancel the HexagonType in field for previous head to BODY. If it's supposed to be EMPTY, removeTail will update the cell again to EMPTY
-			GamePlanner.field[prevHeadRow][prevHeadCol].updateType(HexagonType.BODY);
-			
-		}
+	private void addHead(int pr, int pc, int nr, int nc){
+		GamePlanner.field[pr][pc].updateType(HexagonType.BODY);
+		GamePlanner.field[pr][pc].updateColor(color);
+		GamePlanner.field[nr][nc].updateType(HexagonType.HEAD);
+		GamePlanner.field[nr][nc].updateColor(color);
+		GamePlanner.field[nr][nc].updateDir(curDirection);
 	}
 	
 	private void removeTail(){
@@ -124,29 +82,71 @@ public class Snake {
 		int col;
 		
 		//remove the tail from the snakeBody
-		if(snakeBody.size() > 0){
-			//get the coordinates of the tail
-			row = snakeBody.get(snakeBody.size()-1).getRow();
-			col = snakeBody.get(snakeBody.size()-1).getCol();	
-			
-			//update the snakeBody
-			snakeBody.remove(snakeBody.size()-1);
-			
-			//update the field HexagonType to EMPTY accordingly
+		//get the coordinates of the tail
+		row = snakeBody.get(snakeBody.size()-1).getRow();
+		col = snakeBody.get(snakeBody.size()-1).getCol();	
+		
+		//update the snakeBody
+		snakeBody.remove(snakeBody.size()-1);
+		
+		//update the field HexagonType to EMPTY accordingly
+		GamePlanner.field[row][col].updateType(HexagonType.EMPTY);
+	}
+	
+	private void removeHead() {
+		int nrToCut = (snakeBody.size() + 1) / 2 + punishment;
+		int remaining = snakeBody.size() - nrToCut;
+		if (remaining < 3)
+			remaining = 0;
+		
+		while (snakeBody.size() > remaining) {
+			int row = snakeBody.get(0).getRow();
+			int col = snakeBody.get(0).getCol();
 			GamePlanner.field[row][col].updateType(HexagonType.EMPTY);
+			snakeBody.remove(0);
 		}
-		
-		
+		if (snakeBody.size() > 0) {
+			int row0 = snakeBody.get(0).getRow();
+			int col0 = snakeBody.get(0).getCol();
+			int row1 = snakeBody.get(1).getRow();
+			int col1 = snakeBody.get(1).getCol();
+			curDirection = Utils.rc_2_dir(row0 - row1, col0 - col1);
+			oriDirection = curDirection;
+			targetDirection = curDirection;
+			GamePlanner.field[row0][col0].updateType(HexagonType.HEAD);
+			GamePlanner.field[row0][col0].updateColor(color);
+			GamePlanner.field[row0][col0].updateDir(curDirection);
+		}
+		punishment++;
 	}
 	
 	private int checkCollisionWall(){
 		return 0;
 	}
 	
-	public void setDirection(Direction newDirection) {
-		curDirection = newDirection;
+	public void setDirection(int newDirection) {
+		targetDirection = newDirection;
+		preferTargetDirection();
+		Hexagon head = snakeBody.get(0);
+		head.updateType(HexagonType.HEAD);
+		head.updateColor(color);
+		head.updateDir(curDirection);
 	}
 	
+	private void preferTargetDirection() {
+		int dd = targetDirection - oriDirection;
+		if (dd < -3)
+			dd += 6;
+		if (dd > 3)
+			dd -= 6;
+		if (dd != -3 && dd != 3) {
+			if (dd < 0)
+				curDirection = (oriDirection + 5) % 6;
+			else if (dd > 0)
+				curDirection = (oriDirection + 1) % 6;
+		}
+	}
+		
 	public void setNrToGrow(int num){
 		nrToGrow = num;
 	}
