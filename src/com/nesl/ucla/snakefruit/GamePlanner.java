@@ -14,21 +14,30 @@ public class GamePlanner {
 	public static final int FIELD_HEIGHT = 43;
 	public static Hexagon[][] field = new Hexagon[FIELD_HEIGHT][FIELD_WIDTH]; 
 	
-	private final int start_r = FIELD_WIDTH / 2;
-	private final int start_c = FIELD_HEIGHT / 2;
+	private final int start_r = FIELD_HEIGHT / 2;
+	private final int start_c = FIELD_WIDTH / 2;
 	
 	private final double swipeEffectiveDistance = 30.0;
 	private final double swipeEffectiveDistance2 = swipeEffectiveDistance * swipeEffectiveDistance;
 	
-	public GamePlanner() {
+	private int width, height;
+	
+	public GamePlanner(int _width, int _height) {
+		width = _width;
+		height = _height;
+		Hexagon.OFFSET_X = (int)(width / 2.0 + Hexagon.rc2px(-FIELD_HEIGHT / 2, - FIELD_WIDTH / 2));
+		Hexagon.OFFSET_Y = (int)(height / 2.0 + Hexagon.rc2py(-FIELD_HEIGHT / 2, - FIELD_WIDTH / 2));
+		Log.i(TAG, "middle: " + (width / 2) + ", " + (height / 2));
+		Log.i(TAG, "original: " + Hexagon.OFFSET_X + ", " + Hexagon.OFFSET_Y);
+		
 		for (int i = 0; i < FIELD_HEIGHT; i++)
 			for (int j = 0; j < FIELD_WIDTH; j++)
 				field[i][j] = new Hexagon(i, j);
-		/*for (int i = 0; i < FIELD_HEIGHT; i++) {
-			int left = 0 - (i - FIELD_HEIGHT / 2);
+		for (int i = 0; i < FIELD_HEIGHT; i++) {
+			int left = 0 + (i - FIELD_HEIGHT / 2);
 			if (left < 0)
 				left = 0;
-			int right = FIELD_WIDTH - 1 - (i - FIELD_HEIGHT / 2);
+			int right = FIELD_WIDTH - 1 + (i - FIELD_HEIGHT / 2);
 			if (right >= FIELD_WIDTH)
 				right = FIELD_WIDTH - 1;
 			field[i][left].updateType(HexagonType.WALL);
@@ -44,20 +53,21 @@ public class GamePlanner {
 					field[i][j].updateType(HexagonType.EMPTY);
 			}
 		}
-		humanSnake = new Snake(start_r, start_c, Color.CYAN);*/
-		for (int i = 0; i < FIELD_HEIGHT; i++)
-			for (int j = 0; j < FIELD_WIDTH; j++)
-				field[i][j].updateType(HexagonType.EMPTY);
-		field[start_r][start_c].updateType(HexagonType.WALL);
+		//humanSnake = new Snake(start_r, start_c, Color.CYAN);
+		//for (int i = 0; i < FIELD_HEIGHT; i++)
+		//	for (int j = 0; j < FIELD_WIDTH; j++)
+		//		field[i][j].updateType(HexagonType.EMPTY);
+		//field[start_r][start_c].updateType(HexagonType.WALL);
 	}
 	
 	// the frame starts!
 	public void trigger(Canvas canvas) {
 		canvas.drawColor(Color.BLACK);
-		humanSnake.move();
+		//humanSnake.move();
 		for (int i = 0; i < FIELD_HEIGHT; i++)
 			for (int j = 0; j < FIELD_WIDTH; j++)
 				field[i][j].draw(canvas);
+		//field[start_r][start_c].draw(canvas);
 	}
 	
 	// the screen detect the user swipes

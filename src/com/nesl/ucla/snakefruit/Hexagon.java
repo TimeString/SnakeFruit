@@ -4,8 +4,11 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.Log;
 
 public class Hexagon {
+	private static final String TAG = MainGamePanel.class.getSimpleName();
+	
 	private int r, c;
 	private Paint p;
 	private HexagonType type;
@@ -13,9 +16,9 @@ public class Hexagon {
 	public static int BITMAP_HEIGHT = 28;
 	public static int BITMAP_WIDTH = (int) (BITMAP_HEIGHT * Math.sqrt(3) / 2);
 	
-	private static final double separateFactor = 1.2;
+	private static final double separateFactor = 1.0;
 	private static final double r2x = -BITMAP_HEIGHT * Math.sqrt(3.0) / 4.0 * separateFactor;
-	private static final double r2y = BITMAP_HEIGHT * 4.0 / 3.0 * separateFactor;
+	private static final double r2y = BITMAP_HEIGHT / 4.0 * 3.0 * separateFactor;
 	private static final double c2x = BITMAP_HEIGHT * Math.sqrt(3.0) / 2.0 * separateFactor;
 	private static final double c2y = 0.0 * separateFactor;
 	
@@ -34,7 +37,7 @@ public class Hexagon {
 		px = rc2px(r, c) + OFFSET_X;
 		py = rc2py(r, c) + OFFSET_Y;
 		p = new Paint();
-		p.setColor(1);
+		p.setColor(Color.WHITE);
 	}
 	
 	public int getRow()
@@ -77,14 +80,20 @@ public class Hexagon {
 
 	private void drawHex(Canvas canvas)
 	{
-		Bitmap bitmap = Bitmap.createBitmap(BITMAP_HEIGHT, BITMAP_WIDTH, Bitmap.Config.ARGB_8888);
+		//Log.i(TAG, "drawHex");
+		Bitmap bitmap = Bitmap.createBitmap(BITMAP_WIDTH + 1, BITMAP_HEIGHT + 1, Bitmap.Config.ARGB_8888);
 		Canvas tmp = new Canvas(bitmap);
 		tmp.drawLine((float) BITMAP_WIDTH, (float) (BITMAP_HEIGHT/4.0), (float) (BITMAP_WIDTH/2.0), (float) 0, this.p);
-		tmp.drawLine((float) (BITMAP_WIDTH/2.0), (float) 0, (float) (BITMAP_HEIGHT/4.0), (float) 0, this.p);
-		tmp.drawLine((float) (BITMAP_HEIGHT/4.0), (float) 0, (float) (3 * BITMAP_HEIGHT / 4.0), 0, this.p);
-		tmp.drawLine((float) (3 * BITMAP_HEIGHT / 4.0), 0, (float) (BITMAP_WIDTH/2), (float) BITMAP_HEIGHT, this.p);
-		tmp.drawLine((float) (BITMAP_WIDTH/2), (float) BITMAP_HEIGHT, (float) BITMAP_WIDTH, (float) BITMAP_HEIGHT, this.p);
-		tmp.drawLine((float) BITMAP_WIDTH, (float) BITMAP_HEIGHT, (float) BITMAP_WIDTH, (float) (BITMAP_HEIGHT/4.0), this.p);
+		tmp.drawLine((float) (BITMAP_WIDTH/2.0), (float) 0, (float) 0, (float) (BITMAP_HEIGHT/4.0), this.p);
+		tmp.drawLine( (float) 0, (float) (BITMAP_HEIGHT/4.0), (float) 0, (float) (3 * BITMAP_HEIGHT / 4.0), this.p);
+		tmp.drawLine( (float) 0, (float) (3 * BITMAP_HEIGHT / 4.0), (float) (BITMAP_WIDTH/2), (float) BITMAP_HEIGHT, this.p);
+		tmp.drawLine((float) (BITMAP_WIDTH/2), (float) BITMAP_HEIGHT, (float) BITMAP_WIDTH, (float) (3 * BITMAP_HEIGHT / 4.0), this.p);
+		tmp.drawLine((float) BITMAP_WIDTH, (float) (3 * BITMAP_HEIGHT / 4.0), (float) BITMAP_WIDTH, (float) (BITMAP_HEIGHT/4.0), this.p);
+		//Log.i(TAG, "coor: " + px + ", " + py);
+		//Log.i(TAG,  "r2x: " + r2x);
+		//Log.i(TAG,  "r2y: " + r2y);
+		//Log.i(TAG,  "c2x: " + c2x);
+		//Log.i(TAG,  "c2y: " + c2y);
 		canvas.drawBitmap(bitmap, (float)px, (float)py, this.p);
 	}
 	
@@ -109,10 +118,11 @@ public class Hexagon {
 		case FRUIT:
 			break;
 		case WALL:
+			drawHex(canvas);
 			break;
 		case DEADZONE:
 			break;
 		}
-		drawHex(canvas);
+		
 	}
 }
