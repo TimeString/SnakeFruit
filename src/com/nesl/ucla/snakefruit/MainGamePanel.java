@@ -24,7 +24,7 @@ public class MainGamePanel extends SurfaceView implements
 	
 	private MainThread thread;
 	
-	private GamePlanner gamePlanner = new GamePlanner();
+	private GamePlanner gamePlanner;
 	
 	private long lastUpdateTime = 0;
 	private final long updateFrameMilliScond = 200;
@@ -52,6 +52,10 @@ public class MainGamePanel extends SurfaceView implements
 	public void surfaceCreated(SurfaceHolder holder) {
 		// at this point the surface is created and
 		// we can safely start the game loop
+		//Log.i(TAG, "width=" + getWidth() + ", height=" + getHeight());
+		gamePlanner = new GamePlanner(getWidth(), getHeight());
+		
+		
 		thread.setRunning(true);
 		thread.start();
 	}
@@ -89,6 +93,7 @@ public class MainGamePanel extends SurfaceView implements
 	
 	@Override
 	protected void onDraw(Canvas canvas) {
+		//Log.i(TAG, "called onDraw()");
 		gamePlanner.trigger(canvas);
 	}
 
