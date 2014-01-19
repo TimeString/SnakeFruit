@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.Log;
 
 /**
  * @author impaler
@@ -62,6 +63,7 @@ public class Droid {
 	public void setTargetCoor(double x, double y) {
 		targetX = x;
 		targetY = y;
+		Log.i("droid", x + " " + y);
 	}
 
 	public boolean isTouched() {
