@@ -28,7 +28,11 @@ public class Snake {
 		color = initColor;
 		
 		//make initial head
+		snakeBody = new ArrayList<Hexagon>();
 		snakeBody.add(FIRST, GamePlanner.field[initRow][initCol]);
+		GamePlanner.field[initRow][initCol].updateType(HexagonType.HEAD);
+		GamePlanner.field[initRow][initCol].updateColor(color);
+		GamePlanner.field[initRow][initCol].updateDir(curDirection);
 	}
 	
 	// call from GamePlanner, to move or do something in it
