@@ -1,6 +1,7 @@
 package com.nesl.ucla.snakefruit;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
 
 public class Hexagon {
 	Bitmap bitmap;
@@ -24,12 +25,12 @@ public class Hexagon {
 		bitmap = Bitmap.createBitmap(BITMAP_LENGTH, BITMAP_WIDTH, Bitmap.Config.ARGB_8888);
 	}
 	
-	public int getrow()
+	public int getRow()
 	{
 		return this.r;
 	}
 	
-	public int getcolumn()
+	public int getCol()
 	{
 		return this.c;
 	}
@@ -51,6 +52,15 @@ public class Hexagon {
 		return 0;  //TODO
 	}
 	
+	private void updateBitmap()
+	{
+		this.bitmap.eraseColor(Color.TRANSPARENT);
+		switch(this.type)
+		{
+		case EMPTY:
+			break;
+		}
+	}
 	public void updateType(HexagonType type)
 	{
 		this.type = type;
