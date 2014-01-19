@@ -57,7 +57,7 @@ public class GamePlanner {
 					field[i][j].updateType(HexagonType.EMPTY);
 			}
 		}
-		humanSnake = new Snake(start_r, start_c, Direction.RIGHT, Color.CYAN);
+		humanSnake = new Snake(start_r, start_c, 0, Color.CYAN);
 		//for (int i = 0; i < FIELD_HEIGHT; i++)
 		//	for (int j = 0; j < FIELD_WIDTH; j++)
 		//		field[i][j].updateType(HexagonType.EMPTY);
