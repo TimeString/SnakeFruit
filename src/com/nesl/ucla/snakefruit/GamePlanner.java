@@ -23,6 +23,6 @@ public class GamePlanner {
 	
 	// the screen detect the user swipes
 	public void passUserInputSwipe(int dx, int dy) {
-		
+		// snake.setDirection(??);
 	}
 }

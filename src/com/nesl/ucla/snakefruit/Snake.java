@@ -6,6 +6,7 @@ public class Snake {
 	private ArrayList<CoorI> body;
 	
 	private int nrToGrow;
+	private int direction;
 	
 	public Snake() {
 		
@@ -17,6 +18,10 @@ public class Snake {
 	}
 	
 	public void move() {
+		
+	}
+	
+	public void setDirection() {
 		
 	}
 }
