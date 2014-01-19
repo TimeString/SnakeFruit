@@ -8,7 +8,7 @@ public class Snake {
 	private int nrToGrow;
 	private int direction;
 	
-	public Snake() {
+	public Snake(int sx, int sy) {
 		
 	}
 	

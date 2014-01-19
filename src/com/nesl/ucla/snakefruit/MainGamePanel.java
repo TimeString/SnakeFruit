@@ -83,6 +83,7 @@ public class MainGamePanel extends SurfaceView implements
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
+			Log.i(TAG, "width: " + getWidth() + ", height" + getHeight());
 			Log.d(TAG, "Coords: x=" + event.getX() + ",y=" + event.getY());
 			droid1.setTargetCoor((int)event.getX(), (int)event.getY());
 			droid1.setTouched(true);
@@ -109,6 +110,10 @@ public class MainGamePanel extends SurfaceView implements
 	
 	@Override
 	protected void onDraw(Canvas canvas) {
+		gamePlanner.trigger(canvas);
+	}
+
+	protected void threadSignal(Canvas canvas) {
 		long now = System.currentTimeMillis();
 		long ahead = now - lastUpdateTime;
 		if (ahead >= 30) {
@@ -116,16 +121,7 @@ public class MainGamePanel extends SurfaceView implements
 			if (ahead > 30)
 				ahead = 30;
 			lastUpdateTime = now - ahead;
-			gamePlanner.trigger(canvas);
+			this.onDraw(canvas);
 		}
-		/*
-		canvas.drawColor(Color.BLACK);
-		droid1.draw(canvas);
-		droid2.draw(canvas);
-		*/
-	}
-
-	protected void threadSignal(Canvas canvas) {
-		this.onDraw(canvas);
 	}
 }
