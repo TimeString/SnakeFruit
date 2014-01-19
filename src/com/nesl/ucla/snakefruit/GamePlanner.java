@@ -5,7 +5,7 @@ import android.graphics.Color;
 import android.util.Log;
 
 public class GamePlanner {
-	//private FruitDeliver fruitDeliver;
+	private FruitDeliver fruitDeliver;
 	private Snake humanSnake;
 	//private Score score;
 	private static final String TAG = MainGamePanel.class.getSimpleName();
@@ -22,11 +22,33 @@ public class GamePlanner {
 	
 	public GamePlanner() {
 		for (int i = 0; i < FIELD_HEIGHT; i++)
-			for (int j = 0; j < FIELD_WIDTH; j++) {
+			for (int j = 0; j < FIELD_WIDTH; j++)
 				field[i][j] = new Hexagon(i, j);
-				field[i][j].updateType(HexagonType.EMPTY);
+		/*for (int i = 0; i < FIELD_HEIGHT; i++) {
+			int left = 0 - (i - FIELD_HEIGHT / 2);
+			if (left < 0)
+				left = 0;
+			int right = FIELD_WIDTH - 1 - (i - FIELD_HEIGHT / 2);
+			if (right >= FIELD_WIDTH)
+				right = FIELD_WIDTH - 1;
+			field[i][left].updateType(HexagonType.WALL);
+			field[i][right].updateType(HexagonType.WALL);
+			for (int j = 0; j < FIELD_WIDTH; j++) {
+				if (j < left || j > right)
+					field[i][j].updateType(HexagonType.DEADZONE);
+				else if (j == left || j == right)
+					field[i][j].updateType(HexagonType.WALL);
+				else if (i == 0 || i == FIELD_HEIGHT - 1)
+					field[i][j].updateType(HexagonType.WALL);
+				else
+					field[i][j].updateType(HexagonType.EMPTY);
 			}
-		humanSnake = new Snake(start_r, start_c, Color.CYAN);
+		}
+		humanSnake = new Snake(start_r, start_c, Color.CYAN);*/
+		for (int i = 0; i < FIELD_HEIGHT; i++)
+			for (int j = 0; j < FIELD_WIDTH; j++)
+				field[i][j].updateType(HexagonType.EMPTY);
+		field[start_r][start_c].updateType(HexagonType.WALL);
 	}
 	
 	// the frame starts!
