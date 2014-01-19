@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.nesl.ucla.snakefruit;
 
 import android.annotation.SuppressLint;

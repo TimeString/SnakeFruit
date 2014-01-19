@@ -6,7 +6,8 @@ import android.util.Log;
 
 public class GamePlanner {
 	private FruitDeliver fruitDeliver;
-	private Snake[] snakes = new Snake[2];
+	private int nSnakes = 3;
+	private Snake[] snakes = new Snake[nSnakes];
 	//private Score score;
 	private static final String TAG = MainGamePanel.class.getSimpleName();
 	
@@ -66,6 +67,7 @@ public class GamePlanner {
 		fruitDeliver.generateNewOne();
 		snakes[0] = new HumanControlSnake(start_r - 5, start_c - 10, 0, Color.CYAN, fruitDeliver);
 		snakes[1] = new AIControlSnake(start_r + 5, start_c + 10, 3, Color.YELLOW, fruitDeliver);
+		snakes[2] = new AIControlSnake(start_r + 5, start_c - 10, 2, Color.RED, fruitDeliver);
 		
 		//for (int i = 0; i < FIELD_HEIGHT; i++)
 		//	for (int j = 0; j < FIELD_WIDTH; j++)
@@ -83,7 +85,7 @@ public class GamePlanner {
 			if (ahead > updateFrameMilliScond)
 				ahead = updateFrameMilliScond;
 			lastUpdateTime = now - ahead;
-			for (int i = 0; i < 2; i++) {
+			for (int i = 0; i < nSnakes; i++) {
 				if (snakes[i] != null)
 					snakes[i].move();
 			}

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.nesl.ucla.snakefruit;
 
 import java.util.Random;
