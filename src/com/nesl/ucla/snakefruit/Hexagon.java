@@ -4,10 +4,12 @@ import android.graphics.Bitmap;
 
 public class Hexagon {
 	Bitmap bitmap;
-	private int x, y;
+	private int r, c;
 	private int color;
 	private HexagonType type;
 	private double px, py;
+	private int BITMAP_LENGTH = 28;
+	private int BITMAP_WIDTH = 28;
 	
 	// calculate the vertex coordinate of the hexagon
 	private static double[] vertexCoorX = new double[6];
@@ -15,10 +17,29 @@ public class Hexagon {
 	
 	public Hexagon(int r, int c) {
 		// do some initialize
+		this.r = r;
+		this.c = c;
 		px = x2px();
 		py = y2py();
+		bitmap = Bitmap.createBitmap(BITMAP_LENGTH, BITMAP_WIDTH, Bitmap.Config.ARGB_8888);
 	}
 	
+	public int getrow()
+	{
+		return this.r;
+	}
+	
+	public int getcolumn()
+	{
+		return this.c;
+	}
+	
+	public HexagonType getType()
+	{
+		return type;
+	}
+	
+	}
 	public void draw() {
 		createBitmap();
 	}
