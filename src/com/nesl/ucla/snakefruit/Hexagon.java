@@ -1,11 +1,12 @@
 package com.nesl.ucla.snakefruit;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.Rect;
 import android.graphics.RectF;
 
 public class Hexagon {
@@ -139,6 +140,12 @@ public class Hexagon {
 		tmp.drawOval(new RectF(4, 4, 9, 9), p);
 		canvas.drawBitmap(bitmap, (float)px, (float)py, this.p);
 	}
+	
+	private void drawFruit(Canvas canvas)
+	{
+		canvas.drawBitmap(MainActivity.picture_bm, (float)px, (float)py, this.p);
+	}
+	
 	private void updateBitmap(Canvas canvas)
 	{
 		switch(this.type)
@@ -151,9 +158,10 @@ public class Hexagon {
 		case BODY:
 			drawHex(canvas);
 		case FRUIT:
+			drawFruit(canvas);
 			break;
 		case WALL:
- 			drawWall(canvas);
+  			drawWall(canvas);
 			break;
 		case DEADZONE:
 			break;
