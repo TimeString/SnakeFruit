@@ -10,12 +10,12 @@ public class GamePlanner {
 	//private Score score;
 	private static final String TAG = MainGamePanel.class.getSimpleName();
 	
-	public static final int FIELD_WIDTH = 53;
-	public static final int FIELD_HEIGHT = 43;
+	public static int FIELD_WIDTH = 53;
+	public static int FIELD_HEIGHT = 43;
 	public static Hexagon[][] field = new Hexagon[FIELD_HEIGHT][FIELD_WIDTH]; 
 	
-	private final int start_r = FIELD_HEIGHT / 2;
-	private final int start_c = FIELD_WIDTH / 2;
+	private int start_r = 0;
+	private int start_c = 0;
 	
 	private final double swipeEffectiveDistance = 30.0;
 	private final double swipeEffectiveDistance2 = swipeEffectiveDistance * swipeEffectiveDistance;
@@ -25,6 +25,10 @@ public class GamePlanner {
 	public GamePlanner(int _width, int _height) {
 		width = _width;
 		height = _height;
+		FIELD_WIDTH = width / (Hexagon.BITMAP_WIDTH + 2);
+		FIELD_HEIGHT = height / (Hexagon.BITMAP_HEIGHT + 2);
+		start_r = FIELD_HEIGHT / 2;
+		start_c = FIELD_WIDTH / 2;
 		Hexagon.OFFSET_X = (int)(width / 2.0 + Hexagon.rc2px(-FIELD_HEIGHT / 2, - FIELD_WIDTH / 2));
 		Hexagon.OFFSET_Y = (int)(height / 2.0 + Hexagon.rc2py(-FIELD_HEIGHT / 2, - FIELD_WIDTH / 2));
 		Log.i(TAG, "middle: " + (width / 2) + ", " + (height / 2));
