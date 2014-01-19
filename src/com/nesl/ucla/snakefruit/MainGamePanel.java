@@ -3,6 +3,7 @@
  */
 package com.nesl.ucla.snakefruit;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.BitmapFactory;
@@ -18,6 +19,7 @@ import android.view.SurfaceView;
  * This is the main surface that handles the ontouch events and draws
  * the image to the screen.
  */
+@SuppressLint("WrongCall")
 public class MainGamePanel extends SurfaceView implements
 		SurfaceHolder.Callback {
 
@@ -26,8 +28,13 @@ public class MainGamePanel extends SurfaceView implements
 	private MainThread thread;
 	private Droid droid1, droid2;
 
+	private GamePlanner gamePlanner = new GamePlanner();
+	
+	private long lastUpdateTime = 0;
+	
 	public MainGamePanel(Context context) {
 		super(context);
+		
 		// adding the callback (this) to the surface holder to intercept events
 		getHolder().addCallback(this);
 
@@ -106,12 +113,20 @@ public class MainGamePanel extends SurfaceView implements
 		return true;
 	}
 
+	
+	
 	@Override
 	protected void onDraw(Canvas canvas) {
 		// fills the canvas with black
+		gamePlanner.trigger();
+		/*
 		canvas.drawColor(Color.BLACK);
 		droid1.draw(canvas);
 		droid2.draw(canvas);
+		*/
 	}
 
+	protected void threadSignal(Canvas canvas) {
+		this.onDraw(canvas);
+	}
 }
