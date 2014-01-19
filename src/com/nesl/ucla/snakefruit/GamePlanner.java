@@ -21,17 +21,21 @@ public class GamePlanner {
 	private final double swipeEffectiveDistance2 = swipeEffectiveDistance * swipeEffectiveDistance;
 	
 	public GamePlanner() {
-		for (int i = 0; i < FIELD_WIDTH; i++)
-			for (int j = 0; j < FIELD_HEIGHT; j++) {
-				
+		for (int i = 0; i < FIELD_HEIGHT; i++)
+			for (int j = 0; j < FIELD_WIDTH; j++) {
+				field[i][j] = new Hexagon(i, j);
+				field[i][j].updateType(HexagonType.EMPTY);
 			}
-		humanSnake = new Snake(start_r, start_c);
+		humanSnake = new Snake(start_r, start_c, Color.CYAN);
 	}
 	
 	// the frame starts!
 	public void trigger(Canvas canvas) {
 		canvas.drawColor(Color.BLACK);
 		humanSnake.move();
+		for (int i = 0; i < FIELD_HEIGHT; i++)
+			for (int j = 0; j < FIELD_WIDTH; j++)
+				field[i][j].draw();
 	}
 	
 	// the screen detect the user swipes
