@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 
 public class Hexagon {
-	Bitmap bitmap;
 	private int r, c;
 	private Paint p;
 	private HexagonType type;
@@ -35,9 +34,7 @@ public class Hexagon {
 		px = rc2px(r, c) + OFFSET_X;
 		py = rc2py(r, c) + OFFSET_Y;
 		p = new Paint();
-		p.setColor(0);
-		bitmap = Bitmap.createBitmap(BITMAP_HEIGHT, BITMAP_WIDTH, Bitmap.Config.ARGB_8888);
-
+		p.setColor(1);
 	}
 	
 	public int getRow()
@@ -80,7 +77,15 @@ public class Hexagon {
 
 	private void drawHex(Canvas canvas)
 	{
-//		canvas.drawLine(px+width, py + h/4.0, px+width/2.0, py, this.paith);
+		Bitmap bitmap = Bitmap.createBitmap(BITMAP_HEIGHT, BITMAP_WIDTH, Bitmap.Config.ARGB_8888);
+		Canvas tmp = new Canvas(bitmap);
+		tmp.drawLine((float) BITMAP_WIDTH, (float) (BITMAP_HEIGHT/4.0), (float) (BITMAP_WIDTH/2.0), (float) 0, this.p);
+		tmp.drawLine((float) (BITMAP_WIDTH/2.0), (float) 0, (float) (BITMAP_HEIGHT/4.0), (float) 0, this.p);
+		tmp.drawLine((float) (BITMAP_HEIGHT/4.0), (float) 0, (float) (3 * BITMAP_HEIGHT / 4.0), 0, this.p);
+		tmp.drawLine((float) (3 * BITMAP_HEIGHT / 4.0), 0, (float) (BITMAP_WIDTH/2), (float) BITMAP_HEIGHT, this.p);
+		tmp.drawLine((float) (BITMAP_WIDTH/2), (float) BITMAP_HEIGHT, (float) BITMAP_WIDTH, (float) BITMAP_HEIGHT, this.p);
+		tmp.drawLine((float) BITMAP_WIDTH, (float) BITMAP_HEIGHT, (float) BITMAP_WIDTH, (float) (BITMAP_HEIGHT/4.0), this.p);
+		canvas.drawBitmap(bitmap, (float)px, (float)py, this.p);
 	}
 	
 	private void updateBitmap(Canvas canvas)
