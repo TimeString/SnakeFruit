@@ -117,8 +117,15 @@ public class MainGamePanel extends SurfaceView implements
 	
 	@Override
 	protected void onDraw(Canvas canvas) {
-		// fills the canvas with black
-		gamePlanner.trigger();
+		long now = System.currentTimeMillis();
+		long ahead = now - lastUpdateTime;
+		if (ahead >= 30) {
+			// update time
+			if (ahead > 30)
+				ahead = 30;
+			lastUpdateTime = now - ahead;
+			gamePlanner.trigger(canvas);
+		}
 		/*
 		canvas.drawColor(Color.BLACK);
 		droid1.draw(canvas);
