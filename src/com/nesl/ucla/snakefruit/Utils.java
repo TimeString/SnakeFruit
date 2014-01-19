@@ -1,7 +1,7 @@
 package com.nesl.ucla.snakefruit;
 
 public class Utils {
-	public CoorI getCoorIFromDir(Direction myDirection){
+	static public CoorI getCoorIFromDir(Direction myDirection){
 		CoorI myCoorI = new CoorI();
 		
 		switch(myDirection) {
@@ -32,7 +32,7 @@ public class Utils {
 				
 			case LOWER_RIGHT:
 					myCoorI.col = 1;
-					myCoorI.row = -1;
+					myCoorI.row = 1;
 				break;
 		}
 		

@@ -1,5 +1,5 @@
 package com.nesl.ucla.snakefruit;
 
 public enum Direction {
-	LEFT, RIGHT, UPPER_LEFT, UPPER_RIGHT, LOWER_LEFT, LOWER_RIGHT
+	RIGHT, UPPER_RIGHT, UPPER_LEFT, LEFT, LOWER_LEFT, LOWER_RIGHT
 }
