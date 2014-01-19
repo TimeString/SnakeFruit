@@ -7,7 +7,7 @@ import android.util.Log;
 public class Snake {
 	private static final String TAG = MainGamePanel.class.getSimpleName();
 	
-	private final int INITIAL_GROWTH = 5;
+	private final int INITIAL_GROWTH = 50;
 	
 	private ArrayList<Hexagon> snakeBody;
 	
@@ -74,6 +74,7 @@ public class Snake {
 				removeTail();
 			}
 		}
+		Log.i(TAG, "size: " + snakeBody.size());
 	}
 	
 	private void addHead(int pr, int pc, int nr, int nc){

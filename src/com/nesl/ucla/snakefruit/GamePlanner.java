@@ -35,6 +35,7 @@ public class GamePlanner {
 		field = new Hexagon[FIELD_HEIGHT][FIELD_WIDTH];
 		Hexagon.OFFSET_X = (int)(width / 2.0 + Hexagon.rc2px(-FIELD_HEIGHT / 2, - FIELD_WIDTH / 2));
 		Hexagon.OFFSET_Y = (int)(height / 2.0 + Hexagon.rc2py(-FIELD_HEIGHT / 2, - FIELD_WIDTH / 2));
+		Hexagon.generateCoor();
 		Log.i(TAG, "middle: " + (width / 2) + ", " + (height / 2));
 		Log.i(TAG, "original: " + Hexagon.OFFSET_X + ", " + Hexagon.OFFSET_Y);
 		

@@ -37,6 +37,11 @@ public class Hexagon {
 	public static double OFFSET_X;
 	public static double OFFSET_Y;
 	
+	private RectF rect = new RectF(4, 4, 9, 9);
+	private boolean updateBit = true;
+	
+	private static Bitmap wallBitmap;
+	
 	public Hexagon(int r, int c) {
 		// do some initialize
 		this.r = r;
@@ -45,7 +50,6 @@ public class Hexagon {
 		bitmap = Bitmap.createBitmap(BITMAP_WIDTH + 1, BITMAP_HEIGHT + 1, Bitmap.Config.ARGB_8888);
 		tmp = new Canvas(bitmap);
 		
-		path = new Path();
 		px = rc2px(r, c) + OFFSET_X;
 		py = rc2py(r, c) + OFFSET_Y;
 		p = new Paint();
@@ -69,7 +73,6 @@ public class Hexagon {
 	
 	public void draw(Canvas canvas) {
 		updateBitmap(canvas);
-		
 	}
 	
 	public static double rc2px(int r, int c) {
@@ -83,15 +86,17 @@ public class Hexagon {
 	public void updateType(HexagonType type)
 	{
 		this.type = type;
+		updateBit = true;
 	}
 	
 	public void updateColor(int color)
 	{
 		p.setColor(color);
+		updateBit = true;
 	}
 
 //	public void update
-	private void generateCoor()
+	public static void generateCoor()
 	{
 		X[0] = (float) BITMAP_WIDTH;
 		Y[0] = (float) (BITMAP_HEIGHT/4.0);
@@ -105,30 +110,45 @@ public class Hexagon {
 		Y[4] = (float) BITMAP_HEIGHT;
 		X[5] = (float) BITMAP_WIDTH;
 		Y[5] = (float) (3 * BITMAP_HEIGHT / 4.0);
+		
+		wallBitmap = Bitmap.createBitmap(BITMAP_WIDTH + 1, BITMAP_HEIGHT + 1, Bitmap.Config.ARGB_8888);
+		Paint sp = new Paint();
+		Path spath = new Path();
+		
+		sp.setColor(Color.WHITE);
+		sp.setStyle(Paint.Style.FILL);
+		sp.setAntiAlias(true);
+		spath.moveTo(X[0], Y[0]);
+		for (int i = 0; i < 6; i++) {
+			spath.lineTo(X[(i+1)%6], Y[(i+1)%6]);
+		}
+		spath.close();
+		Canvas scanvas = new Canvas(wallBitmap);
+		scanvas.drawPath(spath, sp);
 	}
 
 	void drawWall(Canvas canvas)
 	{
-		p.setStyle(Paint.Style.FILL);
+		/*p.setStyle(Paint.Style.FILL);
 		p.setAntiAlias(true);
-		generateCoor();
 		path.moveTo(((float)px)+ X[0], ((float)py) + Y[0]);
 		for (int i = 0; i < 6; i++) {
 					path.lineTo(((float)px) + X[(i+1)%6],  ((float)py) + Y[(i+1)%6]);
 			}
 		path.close();
-		canvas.drawPath(path, this.p);
+		canvas.drawPath(path, this.p);*/
+		canvas.drawBitmap(wallBitmap, (float)px, (float)py, this.p);
 	}
 	
 	public void updateDir(int dir)
 	{
 //		this.direction = dir;
+		updateBit = true;
 	}
 	
 	private void drawHex(Canvas canvas)
 	{
 		bitmap.eraseColor(Color.TRANSPARENT);
-		generateCoor();
 		for (int i = 0; i < 6; i++)
 			tmp.drawLine(X[(i)%6], Y[(i)%6], X[(i+1)%6], Y[(i+1)%6], this.p);
 		canvas.drawBitmap(bitmap, (float)px, (float)py, this.p);
@@ -137,9 +157,8 @@ public class Hexagon {
 	private void drawHead(Canvas canvas)
 	{
 		drawHex(canvas);
-		tmp.drawOval(new RectF(4, 4, 9, 9), p);
-		canvas.drawBitmap(bitmap, (float)px, (float)py, this.p);
-	}
+		tmp.drawOval(rect, p);
+		}
 	
 	private void drawFruit(Canvas canvas)
 	{
@@ -157,11 +176,13 @@ public class Hexagon {
 			break;
 		case BODY:
 			drawHex(canvas);
+			break;
 		case FRUIT:
 			drawFruit(canvas);
 			break;
 		case WALL:
   			drawWall(canvas);
+			//drawFruit(canvas);
 			break;
 		case DEADZONE:
 			break;
