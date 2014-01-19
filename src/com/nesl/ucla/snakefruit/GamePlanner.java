@@ -57,7 +57,7 @@ public class GamePlanner {
 		humanSnake.move();
 		for (int i = 0; i < FIELD_HEIGHT; i++)
 			for (int j = 0; j < FIELD_WIDTH; j++)
-				field[i][j].draw();
+				field[i][j].draw(canvas);
 	}
 	
 	// the screen detect the user swipes
