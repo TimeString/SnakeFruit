@@ -31,6 +31,7 @@ public class MainGamePanel extends SurfaceView implements
 	private GamePlanner gamePlanner = new GamePlanner();
 	
 	private long lastUpdateTime = 0;
+	private final long updateFrameMilliScond = 200;
 	
 	public MainGamePanel(Context context) {
 		super(context);
@@ -82,20 +83,11 @@ public class MainGamePanel extends SurfaceView implements
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
-			// delegating event handling to the droid
-			//droid.handleActionDown((int)event.getX(), (int)event.getY());
-			
-			// check if in the lower part of the screen we exit
-			if (event.getY() > getHeight() - 50) {
-				thread.setRunning(false);
-				((Activity)getContext()).finish();
-			} else {
-				Log.d(TAG, "Coords: x=" + event.getX() + ",y=" + event.getY());
-				droid1.setTargetCoor((int)event.getX(), (int)event.getY());
-				droid1.setTouched(true);
-				droid2.setTargetCoor((int)event.getX(), (int)event.getY());
-				droid2.setTouched(true);
-			}
+			Log.d(TAG, "Coords: x=" + event.getX() + ",y=" + event.getY());
+			droid1.setTargetCoor((int)event.getX(), (int)event.getY());
+			droid1.setTouched(true);
+			droid2.setTargetCoor((int)event.getX(), (int)event.getY());
+			droid2.setTouched(true);
 		} if (event.getAction() == MotionEvent.ACTION_MOVE) {
 			// the gestures
 			if (droid1.isTouched()) {
